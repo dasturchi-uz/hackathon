@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Qabul 2026 | HACKATHON IT SCHOOL</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{
+      --navy:#10243e;
+      --navy2:#1e3c72;
+      --accent:#ff7a30;
+      --accent2:#ffb13c;
+      --bg:#f5f7fb;
+      --line:#e3e8f0;
+    }
+    *{font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;}
+    h1,h2,h3,.display-font{font-family:'Sora',system-ui,sans-serif;}
+    body{background:var(--bg); color:var(--navy); min-height:100vh;}
+
+    .hero{
+      background: radial-gradient(1200px 600px at 80% -10%, #2a4a82 0%, var(--navy) 55%, #0b1929 100%);
+      color:#fff;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 64px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 64px);
+      pointer-events:none;
+    }
+    .hero-badge{
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.18);
+      border-radius:999px;
+      padding:6px 16px;
+      font-size:.8rem; font-weight:600; letter-spacing:.04em;
+      backdrop-filter: blur(6px);
+    }
+    .hero-logo{width:80px; height:80px; border-radius:50%; box-shadow:0 8px 24px -8px rgba(0,0,0,0.5);}
+    .btn-about{
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.18);
+      border-radius:999px;
+      padding:10px 20px;
+      font-size:.85rem; font-weight:700; letter-spacing:.01em;
+      color:#fff; text-decoration:none;
+      backdrop-filter: blur(6px);
+      transition:.18s;
+    }
+    .btn-about:hover{background:rgba(255,255,255,0.16); border-color:rgba(255,255,255,0.35); color:#fff;}
+    .hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(255,122,48,.2);}
+    .hero h1{font-size:clamp(2rem, 5vw, 3.4rem); font-weight:800; line-height:1.08; letter-spacing:-.01em;}
+    .hero .accent{color:var(--accent2);}
+    .hero-meta{
+      display:flex; flex-wrap:wrap; gap:14px; margin-top:28px;
+    }
+    .hero-meta .pill{
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:16px;
+      padding:14px 18px;
+      min-width:160px;
+    }
+    .hero-meta .pill .label{font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; opacity:.65;}
+    .hero-meta .pill .val{font-weight:700; font-size:1.02rem; margin-top:2px;}
+
+    .seats-strip{
+      background:linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
+      color:#21130a;
+      font-weight:700;
+      text-align:center;
+      padding:10px 0;
+      letter-spacing:.02em;
+      font-size:.92rem;
+    }
+
+    .card-modern{
+      background:#ffffff;
+      border-radius:28px;
+      box-shadow:0 24px 48px -20px rgba(16,36,62,0.18);
+      border:1px solid var(--line);
+    }
+    .form-control, textarea.form-control, select.form-control{
+      border-radius:14px;
+      padding:13px 16px;
+      border:1.5px solid var(--line);
+      font-size:.96rem;
+    }
+    .form-control:focus, textarea.form-control:focus{
+      border-color:var(--navy2);
+      box-shadow:0 0 0 4px rgba(30,60,114,0.12);
+    }
+    .form-label{font-weight:600; font-size:.88rem; color:#33486b; margin-bottom:6px;}
+    .req{color:var(--accent);}
+
+    .btn-submit{
+      background:var(--navy2);
+      border:none; color:#fff;
+      border-radius:14px;
+      padding:15px 20px;
+      font-weight:700;
+      font-size:1.02rem;
+      transition:.18s ease;
+      letter-spacing:.01em;
+    }
+    .btn-submit:hover{background:#15305f; transform:translateY(-1px);}
+    .btn-submit:disabled{opacity:.65; transform:none;}
+
+    .info-card{
+      border-radius:20px;
+      padding:18px 20px;
+      background:#fff;
+      border:1px solid var(--line);
+      height:100%;
+    }
+    .info-card .ic{
+      width:42px; height:42px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(30,60,114,0.08); color:var(--navy2);
+      font-size:1.25rem; margin-bottom:10px;
+    }
+    .info-card h6{font-weight:700; margin-bottom:4px;}
+    .info-card p{font-size:.86rem; color:#5b6c84; margin:0;}
+
+    .secret-trigger{
+      position:fixed; bottom:24px; right:24px;
+      background:rgba(16,36,62,0.92);
+      color:#fff;
+      width:48px; height:48px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; box-shadow:0 8px 20px rgba(16,36,62,0.35);
+      z-index:1050; font-size:20px; opacity:.35;
+      transition:.2s;
+    }
+    .secret-trigger:hover{opacity:1; transform:scale(1.06);}
+    @media (max-width:640px){ .secret-trigger{bottom:16px; right:16px; width:42px; height:42px;} }
+
+    .success-icon{
+      font-size:3.6rem;
+      animation: pop 0.5s ease;
+    }
+    @keyframes pop{
+      0%{ transform:scale(0.4); opacity:0; }
+      60%{ transform:scale(1.12); opacity:1; }
+      100%{ transform:scale(1); }
+    }
+
+    footer.site-footer{
+      background:var(--navy); color:rgba(255,255,255,.72);
+    }
+    footer.site-footer a{color:#fff; text-decoration:none; font-weight:600;}
+    footer.site-footer .footer-logo{width:48px; height:48px; border-radius:50%;}
+  </style>
+</head>
+<body>
+
+<div class="seats-strip">⚡ JOYLAR SONI CHEKLANGAN — 2026-yil qabuli boshlandi</div>
+
+<header class="hero py-5">
+  <div class="container py-4 position-relative">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+      <img src="logo.png" alt="Hackathon IT School" class="hero-logo">
+      <a href="about.html#tolov" class="btn-about">📋 Oylik to‘lovlar haqida ma'lumot</a>
+    </div>
+    <div class="hero-badge mb-3"><span class="dot"></span> HACKATHON IT SCHOOL — Xususiy maktab</div>
+    <h1 class="mb-3">2026-yil qabul uchun <span class="accent">ariza topshiring</span></h1>
+    <p class="fs-5 mb-0" style="max-width:560px; opacity:.85;">
+      Zamonaviy IT yo‘nalishidagi xususiy maktabimizga farzandingizni yozish uchun quyidagi formani to‘ldiring — operatorlarimiz tez orada siz bilan bog‘lanadi.
+    </p>
+    <div class="hero-meta">
+      <div class="pill"><div class="label">Qabul yili</div><div class="val">2026</div></div>
+      <div class="pill"><div class="label">Bog‘lanish</div><div class="val">+998 50 045 60 10</div></div>
+      <div class="pill"><div class="label">Yo‘nalish</div><div class="val">IT &amp; Texnologiya</div></div>
+    </div>
+  </div>
+</header>
+
+<section class="container py-5">
+  <div class="row g-4 justify-content-center">
+    <div class="col-lg-7 col-12">
+      <div class="card-modern p-4 p-md-5" id="formCard">
+        <div id="formStep">
+          <h3 class="fw-bold mb-1">Qabulga yozilish</h3>
+          <p class="text-secondary mb-4">Ism va telefon raqamingizni qoldiring — qolgan maʼlumotlarni keyinroq operatorimiz bilan birga to‘ldirasiz</p>
+          <form id="registrationForm">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">O‘quvchining F.I.SH <span class="req">*</span></label>
+                <input type="text" class="form-control" id="fullName" placeholder="Ism Familiya Sharifi" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Telefon raqami <span class="req">*</span></label>
+                <input type="tel" class="form-control" id="phone" placeholder="+998 90 123 45 67" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-submit w-100 mt-4" id="submitBtn">Qabulga yozilish</button>
+            <div id="formMessage" class="mt-3"></div>
+          </form>
+        </div>
+
+        <!-- Success state -->
+        <div id="successStep" style="display:none;" class="text-center py-3">
+          <div class="success-icon mb-3">✅</div>
+          <h3 class="fw-bold mb-2">Rahmat!</h3>
+          <p class="text-secondary mb-4">Arizangiz muvaffaqiyatli qabul qilindi. Operatorlarimiz tez orada siz bilan bog‘lanib, qolgan maʼlumotlarni aniqlashtiradi.</p>
+          <button class="btn btn-outline-secondary rounded-pill px-4" id="newRequestBtn">Yana ariza qoldirish</button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer py-4 mt-3">
+  <div class="container text-center small">
+    <img src="logo.png" alt="Hackathon IT School" class="footer-logo mb-2">
+    <p class="mb-1 fw-bold">HACKATHON IT SCHOOL</p>
+    <p class="mb-0">© 2026 · Tel: <a href="tel:+998500456010">+998 50 045 60 10</a> · Joylar soni cheklangan</p>
+    <p class="mb-0 mt-2"><a href="about.html">Maktab haqida va oylik to‘lovlar →</a></p>
+  </div>
+</footer>
+
+<div class="secret-trigger" id="secretAdminLock" title="Admin panel">🔒</div>
+
+<script>
+  const SUPABASE_URL = "https://wxnrolrrfcdzhkjyunyx.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_nUOvzTJN26fLNIzRilM7cQ_IuAXxijd";
+  const ADMIN_PASSWORD = "rishton01";
+
+  let supabaseClient = null;
+  let isSupabaseReady = false;
+
+  function showFormMessage(msg, type = "danger") {
+    const msgDiv = document.getElementById("formMessage");
+    if (!msgDiv) return;
+    msgDiv.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show mb-0 p-2">${msg} <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button></div>`;
+    setTimeout(() => { if(msgDiv) msgDiv.innerHTML = ""; }, 5000);
+  }
+
+  function initSupabase() {
+    try {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      isSupabaseReady = true;
+    } catch(e) {
+      console.error(e);
+      showFormMessage("Supabase ulanish xatosi", "danger");
+    }
+  }
+
+  async function saveRegistration(payload) {
+    if (!isSupabaseReady) throw new Error("Supabase ulanmagan");
+    const { data, error } = await supabaseClient
+      .from("registrations")
+      .insert([payload])
+      .select();
+    if (error) throw error;
+    return data;
+  }
+
+  document.getElementById("registrationForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fullName = document.getElementById("fullName").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+
+    if (!fullName) return showFormMessage("Ism va familiya majburiy", "danger");
+    if (!phone) return showFormMessage("Telefon raqam majburiy", "danger");
+
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true; btn.textContent = "Yuborilmoqda...";
+    try {
+      if (!isSupabaseReady) throw new Error("Supabase ulanishi yo‘q.");
+      await saveRegistration({
+        full_name: fullName,
+        phone: phone,
+        status: "new"
+      });
+      document.getElementById("registrationForm").reset();
+      document.getElementById("formStep").style.display = "none";
+      document.getElementById("successStep").style.display = "block";
+    } catch (err) {
+      let x = "Xatolik: " + (err.message || "");
+      showFormMessage(x, "danger");
+    } finally { btn.disabled = false; btn.textContent = "Qabulga yozilish"; }
+  });
+
+  document.getElementById("newRequestBtn")?.addEventListener("click", () => {
+    document.getElementById("successStep").style.display = "none";
+    document.getElementById("formStep").style.display = "block";
+  });
+
+  document.getElementById("secretAdminLock")?.addEventListener("click", () => {
+    const pwd = prompt("🔐 Admin parolini kiriting:");
+    if (pwd === ADMIN_PASSWORD) {
+      window.location.href = "admin.html";
+    } else if (pwd !== null) {
+      alert("Noto‘g‘ri parol!");
+    }
+  });
+
+  initSupabase();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
